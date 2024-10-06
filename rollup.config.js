@@ -19,6 +19,7 @@ const options = {
       constBindings: true,
       objectShorthand: true,
     },
+    inlineDynamicImports: true,
   },
   plugins: [
     babel({
