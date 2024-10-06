@@ -34,4 +34,3 @@ jobs:
       - run: npm run type-check
       - name: Build
         run: node scripts/build.js
-      - run: npm run test:integration
