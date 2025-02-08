@@ -104,6 +104,11 @@
     "rollup": "^4.21.3",
     "termterm": "^0.5.2",
     "ts-jest": "^29.2.5",
+    "@lerna/legacy-package-management": "^8.1.9",
+    "@lvce-editor/eslint-config": "^1.23.0",
+    "eslint": "^9.20.0",
+    "lerna": "^8.1.9",
+    "prettier": "^3.4.2",
     "typescript": "^5.7.3"
   },
   "prettier": {
