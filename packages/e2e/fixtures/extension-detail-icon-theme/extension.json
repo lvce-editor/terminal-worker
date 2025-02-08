@@ -1,0 +1,13 @@
+{
+  "id": "test.icon-theme-test",
+  "name": "Test Icon Theme",
+  "description": "Test Icon Theme",
+  "categories": ["Themes"],
+  "iconThemes": [
+    {
+      "id": "test",
+      "label": "Test",
+      "path": "icon-theme.json"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "id": "test.product-icon-theme-test",
+  "name": "Test Product Icon Theme",
+  "description": "Test Product Icon Theme",
+  "categories": ["Themes"],
+  "productIconThemes": [
+    {
+      "id": "test",
+      "label": "Test",
+      "path": "product-icon-theme.json"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "id": "test.theme-test",
+  "name": "Test Theme",
+  "description": "Test Theme",
+  "categories": ["Themes"],
+  "colorThemes": [
+    {
+      "id": "test",
+      "label": "Test",
+      "path": "color-theme.json"
+    }
+  ]
+}

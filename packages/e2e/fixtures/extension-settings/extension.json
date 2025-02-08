@@ -1,0 +1,11 @@
+{
+  "id": "test.settings-test",
+  "name": "Test Settings",
+  "description": "Test Settings",
+  "settings": [
+    {
+      "id": "test",
+      "label": "Test"
+    }
+  ]
+}
