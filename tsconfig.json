@@ -1,24 +1,21 @@
 {
-  "compilerOptions": {
-    "lib": ["esnext", "webworker"],
-    "checkJs": true,
-    "target": "esnext",
-    "types": [],
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "skipLibCheck": true,
-    "noEmit": true,
-    "allowSyntheticDefaultImports": true,
-    "isolatedModules": true,
-    "assumeChangesOnlyAffectDirectDependencies": true,
-    "strict": true,
-    "noImplicitAny": false,
-    "composite": true,
-    "allowImportingTsExtensions": true,
-    "rootDir": ".",
-    "forceConsistentCasingInFileNames": true,
-    "noImplicitReturns": true,
-    "noUnusedLocals": true
-  },
-  "include": ["src", "test"]
+  "files": [],
+  "include": [],
+  "references": [
+    {
+      "path": "./packages/terminal-worker"
+    },
+    {
+      "path": "./packages/build"
+    },
+    {
+      "path": "./packages/e2e"
+    },
+    {
+      "path": "./packages/memory"
+    },
+    {
+      "path": "./packages/server"
+    }
+  ]
 }
