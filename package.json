@@ -11,6 +11,7 @@
   },
   "scripts": {
     "build": "node scripts/build.js",
+    "build:static": "node packages/build/src/build-static.js",
     "build:watch": "nodemon",
     "lint": "npx xo .",
     "postinstall": "lerna bootstrap --ci",
