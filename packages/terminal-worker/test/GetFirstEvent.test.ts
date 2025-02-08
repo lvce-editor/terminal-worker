@@ -1,5 +1,5 @@
-import * as GetFirstEvent from '../src/parts/GetFirstEvent/GetFirstEvent.ts'
 import { test, expect } from '@jest/globals'
+import * as GetFirstEvent from '../src/parts/GetFirstEvent/GetFirstEvent.ts'
 
 test('getFirstEvent', async () => {
   const eventTarget = new EventTarget()

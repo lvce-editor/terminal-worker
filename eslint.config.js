@@ -4,6 +4,9 @@ export default [
   ...config.default,
   {
     files: ['**/*.ts'],
-    rules: {},
+    rules: {
+      '@typescript-eslint/explicit-function-return-type': 'off',
+      '@typescript-eslint/prefer-readonly-parameter-types': 'off',
+    },
   },
 ]

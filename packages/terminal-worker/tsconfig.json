@@ -12,7 +12,7 @@
     "isolatedModules": true,
     "assumeChangesOnlyAffectDirectDependencies": true,
     "strict": true,
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "composite": true,
     "allowImportingTsExtensions": true,
     "rootDir": ".",

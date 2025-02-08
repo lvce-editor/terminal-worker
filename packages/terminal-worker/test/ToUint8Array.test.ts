@@ -1,5 +1,5 @@
-import * as ToUint8Array from '../src/parts/ToUint8Array/ToUint8Array.ts'
 import { test, expect } from '@jest/globals'
+import * as ToUint8Array from '../src/parts/ToUint8Array/ToUint8Array.ts'
 
 test('uint8Array', () => {
   const data = new Uint8Array([])
