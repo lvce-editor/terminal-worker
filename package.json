@@ -10,13 +10,13 @@
     "test": "test"
   },
   "scripts": {
+    "build": "node scripts/build.js",
+    "build:watch": "nodemon",
     "lint": "npx xo .",
+    "postinstall": "lerna bootstrap --ci",
     "test": "lerna run test",
     "test:watch": "node --unhandled-rejections=warn --experimental-vm-modules ./node_modules/jest/bin/jest.js --watch",
-    "type-check": "tsc -b",
-    "build:watch": "nodemon",
-    "build": "node scripts/build.js",
-    "postinstall": "lerna bootstrap --ci"
+    "type-check": "tsc -b"
   },
   "xo": {
     "rules": {
