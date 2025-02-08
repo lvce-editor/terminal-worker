@@ -22,6 +22,7 @@ const options = {
       constBindings: true,
       objectShorthand: true,
     },
+    inlineDynamicImports: true,
   },
   external: ['ws', 'electron'],
   plugins: [
