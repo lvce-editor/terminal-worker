@@ -1,0 +1,26 @@
+{
+  "id": "test.webviews-test",
+  "name": "Test WebViews",
+  "description": "Test WebViews",
+  "webViews": [
+    {
+      "id": "builtin.test-webviews",
+      "selector": [".test-webviews"],
+      "contentSecurityPolicy": ["default-src 'none'", "script-src 'self'"],
+      "elements": [
+        {
+          "type": "title",
+          "value": "Video Preview"
+        },
+        {
+          "type": "script",
+          "path": "media/index.js"
+        },
+        {
+          "type": "css",
+          "path": "media/index.css"
+        }
+      ]
+    }
+  ]
+}

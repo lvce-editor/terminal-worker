@@ -1,0 +1,11 @@
+{
+  "id": "test.json-validation-test",
+  "name": "Test Json Validation",
+  "description": "Test Json Validation",
+  "jsonValidation": [
+    {
+      "fileMatch": "*.test.json",
+      "schema": "test://schema.json"
+    }
+  ]
+}

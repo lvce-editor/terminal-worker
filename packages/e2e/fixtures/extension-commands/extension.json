@@ -1,0 +1,11 @@
+{
+  "id": "test.commands-test",
+  "name": "Test Commands",
+  "description": "Test Commands",
+  "commands": [
+    {
+      "id": "test",
+      "label": "Test"
+    }
+  ]
+}
