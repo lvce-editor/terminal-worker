@@ -21,6 +21,7 @@ const options = {
     },
     inlineDynamicImports: true,
   },
+  external: ['ws', 'electron'],
   plugins: [
     babel({
       babelHelpers: 'bundled',
