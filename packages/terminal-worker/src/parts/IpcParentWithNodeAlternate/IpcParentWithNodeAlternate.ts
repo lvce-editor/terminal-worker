@@ -1,7 +1,7 @@
 import * as GetData from '../GetData/GetData.ts'
+import * as IpcParentWithElectron from '../IpcParentWithElectron/IpcParentWithElectron.ts'
 import * as Platform from '../Platform/Platform.ts'
 import * as PlatformType from '../PlatformType/PlatformType.ts'
-import * as IpcParentWithElectron from '../IpcParentWithElectron/IpcParentWithElectron.ts'
 
 export const create = async (options) => {
   switch (Platform.platform) {

@@ -1,6 +1,6 @@
 import * as JsonRpc from '../JsonRpc/JsonRpc.ts'
-import * as TerminalProcessState from '../TerminalProcessState/TerminalProcessState.ts'
 import * as LaunchTerminalProcess from '../LaunchTerminalProcess/LaunchTerminalProcess.ts'
+import * as TerminalProcessState from '../TerminalProcessState/TerminalProcessState.ts'
 
 export const listen = async () => {
   await LaunchTerminalProcess.launchTerminalProcess()

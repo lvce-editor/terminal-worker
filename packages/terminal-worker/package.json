@@ -53,7 +53,7 @@
     "@lvce-editor/rpc-registry": "^1.0.0",
     "@lvce-editor/verror": "^1.6.0",
     "jest": "^29.7.0",
-    "ts-jest": "^29.2.5",
-    "termterm": "^0.5.2"
+    "termterm": "^0.5.2",
+    "ts-jest": "^29.2.5"
   }
 }
