@@ -9,7 +9,7 @@ const sharedProcessUrl = pathToFileURL(sharedProcessPath).toString()
 
 const sharedProcess = await import(sharedProcessUrl)
 
-process.env.PATH_PREFIX = '/extension-detail-view'
+process.env.PATH_PREFIX = '/terminal-worker'
 await sharedProcess.exportStatic({
   root,
   extensionPath: '',
