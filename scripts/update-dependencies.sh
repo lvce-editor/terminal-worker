@@ -16,7 +16,7 @@ fi
 
 function updateDependencies {
   echo "updating dependencies..."
-  OUTPUT=`ncu -u -x @types/node -x rollup`
+  OUTPUT=`ncu -u -x @types/node -x rollup -x eslint`
   SUB='All dependencies match the latest package versions'
   if [[ "$OUTPUT" == *"$SUB"* ]]; then
     echo "$OUTPUT"
@@ -26,7 +26,14 @@ function updateDependencies {
   fi
 }
 
-updateDependencies &&
+                                                       updateDependencies             &&
+cd packages/build                                   && updateDependencies && cd ../.. &&
+cd packages/e2e                                     && updateDependencies && cd ../.. &&
+cd packages/memory                                  && updateDependencies && cd ../.. &&
+cd packages/server                                  && updateDependencies && cd ../.. &&
+cd packages/extension-detail-view-worker            && updateDependencies && cd ../.. &&
+cd packages/test-integration                        && updateDependencies && cd ../.. &&
+cd packages/test-integration-util                   && updateDependencies && cd ../.. &&
 
 echo "Great Success!"
 
