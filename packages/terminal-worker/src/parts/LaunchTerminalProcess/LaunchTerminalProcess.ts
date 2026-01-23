@@ -1,5 +1,4 @@
 import { PlatformType } from '@lvce-editor/constants'
-import * as IpcParentType from '../IpcParentType/IpcParentType.ts'
 import { createElectronRpc } from '../IpcParentWithElectron/IpcParentWithElectron.ts'
 import { createWebSocketRpc } from '../IpcParentWithWebSocket/IpcParentWithWebSocket.ts'
 import { set } from '../IpcState/IpcState.ts'
@@ -9,7 +8,6 @@ import { VError } from '../VError/VError.ts'
 const doCreate = () => {
   const options = {
     initialCommand: 'HandleMessagePortForTerminalProcess.handleMessagePortForTerminalProcess',
-    method: IpcParentType.NodeAlternate,
     name: 'Terminal Process',
     type: 'terminal-process',
   }
