@@ -6,6 +6,7 @@ const getPlatform = () => {
     // @ts-ignore
     return PLATFORM
   }
+  // @ts-ignore
   if (typeof process !== 'undefined' && process.env.NODE_ENV === 'test') {
     return 'test'
   }

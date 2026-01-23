@@ -9,14 +9,14 @@ export const create = async (canvasTextId: number, canvasCursorId: number, id: n
   const canvasCursor = await OffscreenCanvas.create(canvasCursorId)
   const canvasText = await OffscreenCanvas.create(canvasTextId)
   const emulator = await TerminalEmulator.create({
-    offscreenCanvasCursor: canvasCursor,
-    offscreenCanvasText: canvasText,
     focusTextArea() {
       // TODO
     },
     handleInput(input) {
       TerminalProcess.send('Terminal.write', id, input)
     },
+    offscreenCanvasCursor: canvasCursor,
+    offscreenCanvasText: canvasText,
   })
   TerminalEmulatorState.set(id, emulator)
   await TerminalProcess.invoke('Terminal.create', id, cwd, command, args)

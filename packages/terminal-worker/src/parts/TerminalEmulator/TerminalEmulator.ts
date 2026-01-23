@@ -1,7 +1,7 @@
 import { createOffscreenTerminal } from 'termterm'
 import * as Assert from '../Assert/Assert.ts'
 
-export const create = async ({ offscreenCanvasCursor, offscreenCanvasText, focusTextArea, handleInput }) => {
+export const create = async ({ focusTextArea, handleInput, offscreenCanvasCursor, offscreenCanvasText }) => {
   Assert.object(offscreenCanvasCursor)
   Assert.object(offscreenCanvasText)
   const terminal = createOffscreenTerminal({

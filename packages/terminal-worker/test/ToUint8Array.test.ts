@@ -13,8 +13,8 @@ test('string', () => {
 
 test('object', () => {
   const data = {
-    type: 'buffer',
     data: [1],
+    type: 'buffer',
   }
   expect(ToUint8Array.toUint8Array(data)).toEqual(new Uint8Array([1]))
 })

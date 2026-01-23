@@ -1,6 +1,6 @@
 import type { Test } from '@lvce-editor/test-with-playwright'
 
-export const test: Test = async ({ Main, Locator, expect }) => {
+export const test: Test = async ({ expect, Locator, Main }) => {
   // arrange
 
   // act
