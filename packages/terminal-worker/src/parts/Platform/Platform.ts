@@ -1,5 +1,7 @@
 import { PlatformType } from '@lvce-editor/constants'
 
+// TODO pass this as argument
+
 const getPlatform = () => {
   // @ts-ignore
   if (typeof PLATFORM !== 'undefined') {
