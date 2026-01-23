@@ -1,13 +1,10 @@
-import * as Command from '../Command/Command.ts'
 import * as CommandMap from '../CommandMap/CommandMap.ts'
-import * as HandleIpc from '../HandleIpc/HandleIpc.ts'
-import * as IpcChild from '../IpcChild/IpcChild.ts'
-import * as IpcChildType from '../IpcChildType/IpcChildType.ts'
-import * as Rpc from '../Rpc/Rpc.ts'
+import * as CommandMapRef from '../CommandMapRef/CommandMapRef.ts'
+import { initializeRendererWorker } from '../InitializeRendererWorker/initializeRendereWorker.ts'
+import { registerCommands } from '../TerminalStates/TerminalStates.ts'
 
-export const listen = async () => {
-  Command.register(CommandMap.commandMap)
-  const ipc = await IpcChild.listen({ method: IpcChildType.Auto() })
-  HandleIpc.handleIpc(ipc)
-  Rpc.listen(ipc)
+export const listen = async (): Promise<void> => {
+  registerCommands(CommandMap.commandMap)
+  Object.assign(CommandMapRef.commandMapRef, CommandMap.commandMap)
+  await initializeRendererWorker()
 }
