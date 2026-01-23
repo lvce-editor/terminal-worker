@@ -8,7 +8,7 @@ const state: State = {
   rpc: undefined,
 }
 
-export const get = () => {
+const get = () => {
   return state.rpc
 }
 

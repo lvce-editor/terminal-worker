@@ -1,4 +1,4 @@
-export const Web = 'web'
+const Web = 'web'
 
 export const Electron = 'electron'
 
