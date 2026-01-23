@@ -11,3 +11,7 @@ const state: State = {
 export const set = (rpc: Rpc | undefined): void => {
   state.rpc = rpc
 }
+
+export const get = () => {
+  return state.rpc
+}

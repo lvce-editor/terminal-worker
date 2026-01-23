@@ -1,15 +1,23 @@
-import * as JsonRpc from '../JsonRpc/JsonRpc.ts'
+import { get } from '../IpcState/IpcState.ts'
 import * as LaunchTerminalProcess from '../LaunchTerminalProcess/LaunchTerminalProcess.ts'
-import * as TerminalProcessState from '../TerminalProcessState/TerminalProcessState.ts'
 
 export const listen = async () => {
   await LaunchTerminalProcess.launchTerminalProcess()
 }
 
 export const invoke = (method, ...params) => {
-  return JsonRpc.invoke(TerminalProcessState.state.ipc, method, ...params)
+  const rpc = get()
+  if (!rpc) {
+    throw new Error('RPC is not initialized')
+  }
+  return rpc.invoke(method, ...params)
 }
 
 export const send = (method, ...params) => {
-  return JsonRpc.send(TerminalProcessState.state.ipc, method, ...params)
+  const rpc = get()
+  if (!rpc) {
+    throw new Error('RPC is not initialized')
+  }
+
+  return rpc.send(method, ...params)
 }
