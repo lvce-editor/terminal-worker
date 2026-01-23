@@ -1,6 +1,6 @@
 interface WithResolvers<T> {
-  readonly resolve: (value: T) => void
   readonly promise: Promise<T>
+  readonly resolve: (value: T) => void
 }
 
 export const withResolvers = <T>(): WithResolvers<T> => {
@@ -9,7 +9,7 @@ export const withResolvers = <T>(): WithResolvers<T> => {
     _resolve = resolve
   })
   return {
-    resolve: _resolve!,
     promise,
+    resolve: _resolve!,
   }
 }

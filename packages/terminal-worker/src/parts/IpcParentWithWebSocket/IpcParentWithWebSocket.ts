@@ -26,7 +26,6 @@ export const wrap = (webSocket: any) => {
      * @type {any}
      */
     handleMessage: undefined,
-    webSocket,
     get onmessage() {
       return this.handleMessage
     },
@@ -61,5 +60,6 @@ export const wrap = (webSocket: any) => {
       const stringifiedMessage = Json.stringifyCompact(message)
       this.webSocket.send(stringifiedMessage)
     },
+    webSocket,
   }
 }

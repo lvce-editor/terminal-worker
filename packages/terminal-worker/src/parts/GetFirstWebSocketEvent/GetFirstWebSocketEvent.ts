@@ -3,8 +3,8 @@ import * as GetFirstEvent from '../GetFirstEvent/GetFirstEvent.ts'
 
 export const waitForWebSocketToBeOpen = (webSocket: any): Promise<any> => {
   return GetFirstEvent.getFirstEvent(webSocket, {
-    open: FirstWebSocketEventType.Open,
     close: FirstWebSocketEventType.Close,
     error: FirstWebSocketEventType.Error,
+    open: FirstWebSocketEventType.Open,
   })
 }
