@@ -6,10 +6,6 @@ export const get = (id) => {
   return state.terminals[id]
 }
 
-const remove = (id) => {
-  delete state.terminals[id]
-}
-
 export const set = (id, terminal) => {
   state.terminals[id] = terminal
 }
