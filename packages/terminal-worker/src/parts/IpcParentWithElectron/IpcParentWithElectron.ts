@@ -1,8 +1,13 @@
-import * as GetPortTuple from '../GetPortTuple/GetPortTuple.ts'
+import { TransferMessagePortRpcParent } from '@lvce-editor/rpc'
+import * as CommandMapRef from '../CommandMapRef/CommandMapRef.ts'
 import * as SendMessagePortToElectron from '../SendMessagePortToElectron/SendMessagePortToElectron.ts'
 
-export const create = async (options) => {
-  const { port1, port2 } = GetPortTuple.getPortTuple()
-  await SendMessagePortToElectron.sendMessagePortToElectron(port2, options.initialCommand)
-  return port1
+export const createElectronRpc = async (options) => {
+  const rpc = await TransferMessagePortRpcParent.create({
+    commandMap: CommandMapRef.commandMapRef,
+    send(port) {
+      return SendMessagePortToElectron.sendMessagePortToElectron(port, options.initialCommand)
+    },
+  })
+  return rpc
 }

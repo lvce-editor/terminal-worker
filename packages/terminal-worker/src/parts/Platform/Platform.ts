@@ -1,4 +1,6 @@
-import * as PlatformType from '../PlatformType/PlatformType.ts'
+import { PlatformType } from '@lvce-editor/constants'
+
+// TODO pass this as argument
 
 const getPlatform = () => {
   // @ts-ignore
