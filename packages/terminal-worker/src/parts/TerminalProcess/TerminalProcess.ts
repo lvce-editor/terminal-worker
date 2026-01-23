@@ -2,6 +2,9 @@ import { get } from '../IpcState/IpcState.ts'
 import * as LaunchTerminalProcess from '../LaunchTerminalProcess/LaunchTerminalProcess.ts'
 
 export const listen = async () => {
+  if (get()) {
+    return
+  }
   await LaunchTerminalProcess.launchTerminalProcess()
 }
 
