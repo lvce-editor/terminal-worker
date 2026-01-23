@@ -1,11 +1,9 @@
 {
   "name": "@lvce-editor/terminal-worker-monorepo",
   "version": "0.0.0-dev",
-  "description": "",
   "license": "MIT",
   "author": "Lvce Editor",
   "type": "module",
-  "main": "",
   "directories": {
     "test": "test"
   },
@@ -13,8 +11,8 @@
     "build": "node scripts/build.js",
     "build:static": "node packages/build/src/build-static.js",
     "build:watch": "nodemon",
-    "lint": "eslint .",
     "postinstall": "lerna bootstrap --ci",
+    "lint": "eslint .",
     "test": "lerna run test",
     "test:watch": "node --unhandled-rejections=warn --experimental-vm-modules ./node_modules/jest/bin/jest.js --watch",
     "type-check": "tsc -b"
@@ -28,7 +26,7 @@
     "@lerna/legacy-package-management": "^8.2.4",
     "@lvce-editor/eslint-config": "^4.7.0",
     "eslint": "^9.19.0",
-    "lerna": "^9.0.3",
+    "lerna": "^8.2.3",
     "prettier": "^3.8.1",
     "typescript": "^5.9.3"
   }
