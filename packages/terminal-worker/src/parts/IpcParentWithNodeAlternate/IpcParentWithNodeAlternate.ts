@@ -7,7 +7,7 @@ import * as PlatformType from '../PlatformType/PlatformType.ts'
 export const create = async (options) => {
   switch (Platform.platform) {
     case PlatformType.Electron:
-      return IpcParentWithElectron.create(options)
+      return IpcParentWithElectron.createElectronRpc(options)
     case PlatformType.Remote:
     case PlatformType.Web:
       const module = IpcParentWithWebSocket
