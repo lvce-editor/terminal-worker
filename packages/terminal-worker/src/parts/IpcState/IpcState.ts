@@ -1,14 +1,17 @@
-export const state = {
-  /**
-   * @type {any}
-   */
-  ipc: undefined,
+import type { Rpc } from '@lvce-editor/rpc'
+
+interface State {
+  rpc: Rpc | undefined
+}
+
+const state: State = {
+  rpc: undefined,
 }
 
 export const get = () => {
-  return state.ipc
+  return state.rpc
 }
 
-export const set = (ipc) => {
-  state.ipc = ipc
+export const set = (rpc: Rpc | undefined): void => {
+  state.rpc = rpc
 }
