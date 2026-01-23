@@ -7,10 +7,10 @@ import { VError } from '../VError/VError.ts'
 export const launchTerminalProcess = async () => {
   try {
     const ipc = await IpcParent.create({
-      method: IpcParentType.NodeAlternate,
-      type: 'terminal-process',
-      name: 'Terminal Process',
       initialCommand: 'HandleMessagePortForTerminalProcess.handleMessagePortForTerminalProcess',
+      method: IpcParentType.NodeAlternate,
+      name: 'Terminal Process',
+      type: 'terminal-process',
     })
     TerminalProcessState.state.ipc = ipc
     HandleIpc.handleIpc(ipc)

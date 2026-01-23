@@ -6,19 +6,19 @@ import * as PlatformType from '../PlatformType/PlatformType.ts'
 
 export const create = async (options) => {
   switch (Platform.platform) {
-    case PlatformType.Web:
+    case PlatformType.Electron:
+      return IpcParentWithElectron.create(options)
     case PlatformType.Remote:
+    case PlatformType.Web:
       const module = IpcParentWithWebSocket
       const rawIpc = await module.create(options)
       if (options.raw) {
         return rawIpc
       }
       return {
-        rawIpc,
         module,
+        rawIpc,
       }
-    case PlatformType.Electron:
-      return IpcParentWithElectron.create(options)
     default:
       throw new Error('unsupported platform')
   }
@@ -29,7 +29,6 @@ export const wrap = (port) => {
     return port.module.wrap(port.rawIpc)
   }
   return {
-    port,
     /**
      * @type {any}
      */
@@ -49,6 +48,7 @@ export const wrap = (port) => {
       }
       this.port.onmessage = wrappedListener
     },
+    port,
     send(message) {
       this.port.postMessage(message)
     },

@@ -2,7 +2,7 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'extension-detail.feature-product-icon-theme'
 
-export const test: Test = async ({ Main, Locator, expect, Extension }) => {
+export const test: Test = async ({ expect, Extension, Locator, Main }) => {
   // arrange
   const extensionUri = import.meta.resolve('../fixtures/extension-detail-product-icon-theme')
   await Extension.addWebExtension(extensionUri)

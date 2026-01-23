@@ -10,7 +10,7 @@ test('getFirstEvent', async () => {
   const event = new Event('a')
   eventTarget.dispatchEvent(event)
   expect(await promise).toEqual({
-    type: 1,
     event,
+    type: 1,
   })
 })
