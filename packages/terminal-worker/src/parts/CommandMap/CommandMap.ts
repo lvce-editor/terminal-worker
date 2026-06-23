@@ -7,5 +7,8 @@ export const commandMap = {
   'Terminal.handleBlur': Terminal.handleBlur,
   'Terminal.handleKeyDown': Terminal.handleKeyDown,
   'Terminal.handleMouseDown': Terminal.handleMouseDown,
+  'Terminal.write': Terminal.write,
+  'Terminal.resize': Terminal.resize,
+  'Terminal.dispose': Terminal.dispose,
   'Viewlet.send': Terminal.handleMessage,
 }

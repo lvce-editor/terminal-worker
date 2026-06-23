@@ -9,3 +9,7 @@ export const get = (id) => {
 export const set = (id, terminal) => {
   state.terminals[id] = terminal
 }
+
+export const remove = (id) => {
+  delete state.terminals[id]
+}
