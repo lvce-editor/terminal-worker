@@ -13,7 +13,7 @@ const runCommand = async (KeyBoard, command) => {
 
 export const skip = 1
 
-export const test = async ({ Command, KeyBoard, Locator, Settings, expect }) => {
+export const test = async ({ Command, expect, KeyBoard, Locator, Settings }) => {
   await Settings.update({
     'terminal.backend': 'mock',
     'terminal.renderer': 'xterm',
@@ -24,6 +24,7 @@ export const test = async ({ Command, KeyBoard, Locator, Settings, expect }) => 
 
   const terminal = Locator('.XtermTerminal')
   await expect(terminal).toBeVisible()
+  // eslint-disable-next-line e2e/no-direct-click
   await terminal.click()
 
   await runCommand(KeyBoard, 'echo hello > file.txt')

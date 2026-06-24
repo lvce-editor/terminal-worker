@@ -33,39 +33,62 @@ const stripQuotes = (text: string): string => {
   return text
 }
 
+const getCommandArguments = (command: string, name: string): string => {
+  const prefix = `${name} `
+  if (!command.startsWith(prefix)) {
+    return ''
+  }
+  return command.slice(prefix.length)
+}
+
+const getEchoRedirect = (command: string): readonly [string, string] | undefined => {
+  const echoArguments = getCommandArguments(command, 'echo')
+  const redirectIndex = echoArguments.indexOf('>')
+  if (redirectIndex === -1) {
+    return undefined
+  }
+  const text = echoArguments.slice(0, redirectIndex).trimEnd()
+  const file = echoArguments.slice(redirectIndex + 1).trim()
+  if (!text || !file || file.includes(' ')) {
+    return undefined
+  }
+  return [text, file]
+}
+
 const runCommand = async (terminal: MockTerminal, command: string): Promise<void> => {
-  const echoRedirectMatch = command.match(/^echo\s+(.+?)\s*>\s*(\S+)$/)
+  const echoRedirectMatch = getEchoRedirect(command)
   if (echoRedirectMatch) {
-    terminal.files[echoRedirectMatch[2]] = stripQuotes(echoRedirectMatch[1]) + '\n'
+    const [text, file] = echoRedirectMatch
+    terminal.files[file] = stripQuotes(text) + '\n'
     return
   }
-  const echoMatch = command.match(/^echo\s+(.+)$/)
-  if (echoMatch) {
-    terminal.onData(stripQuotes(echoMatch[1]) + '\n')
+  const echoText = getCommandArguments(command, 'echo')
+  if (echoText) {
+    terminal.onData(stripQuotes(echoText) + '\n')
     return
   }
-  const touchMatch = command.match(/^touch\s+(.+)$/)
-  if (touchMatch) {
-    for (const file of touchMatch[1].split(/\s+/)) {
+  const touchFiles = getCommandArguments(command, 'touch')
+  if (touchFiles) {
+    const files = touchFiles.split(/\s+/)
+    for (const file of files) {
       terminal.files[file] ||= ''
     }
     return
   }
-  const catMatch = command.match(/^cat\s+(.+)$/)
-  if (catMatch) {
-    const file = catMatch[1]
+  const catFile = getCommandArguments(command, 'cat')
+  if (catFile) {
+    const file = catFile
     terminal.onData(terminal.files[file] || '')
     return
   }
   if (command === 'ls') {
-    terminal.onData(Object.keys(terminal.files).toSorted().join('\n') + '\n')
+    terminal.onData(Object.keys(terminal.files).toSorted((a, b) => a.localeCompare(b)).join('\n') + '\n')
     return
   }
   terminal.onData(`${command}: command not found\n`)
 }
 
-export const create = (id: number, cwd: string, onData: (data: string) => void): void => {
-  void cwd
+export const create = (id: number, _cwd: string, onData: (data: string) => void): void => {
   state.terminals[id] = createTerminal(onData)
   onData(prompt)
 }
@@ -86,10 +109,8 @@ export const write = async (id: number, data: string): Promise<void> => {
   }
 }
 
-export const resize = (id: number, columns: number, rows: number): void => {
+export const resize = (id: number, _columns: number, _rows: number): void => {
   getTerminal(id)
-  void columns
-  void rows
 }
 
 export const dispose = (id: number): void => {
