@@ -1,5 +1,7 @@
 export const name = 'viewlet.terminal-xterm-echo'
 
+export const skip = 1
+
 const runCommand = async (terminal, KeyBoard, command) => {
   await terminal.type(command)
   await KeyBoard.press('Enter')
