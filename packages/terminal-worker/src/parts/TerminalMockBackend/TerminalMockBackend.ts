@@ -58,7 +58,7 @@ const runCommand = async (terminal: MockTerminal, command: string): Promise<void
     return
   }
   if (command === 'ls') {
-    terminal.onData(Object.keys(terminal.files).sort().join('\n') + '\n')
+    terminal.onData(Object.keys(terminal.files).toSorted().join('\n') + '\n')
     return
   }
   terminal.onData(`${command}: command not found\n`)
