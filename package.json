@@ -9,7 +9,7 @@
   },
   "scripts": {
     "build": "node scripts/build.js",
-    "build:static": "node packages/build/src/build-static.js",
+    "build:static": "node packages/build/src/build-static.ts",
     "build:watch": "nodemon",
     "postinstall": "lerna bootstrap --ci",
     "lint": "eslint .",
