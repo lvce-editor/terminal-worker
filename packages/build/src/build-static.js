@@ -10,9 +10,28 @@ const sharedProcessUrl = pathToFileURL(sharedProcessPath).toString()
 const sharedProcess = await import(sharedProcessUrl)
 
 process.env.PATH_PREFIX = '/terminal-worker'
-await sharedProcess.exportStatic({
+const { commitHash } = await sharedProcess.exportStatic({
   root,
   extensionPath: '',
 })
 
+const workerPath = join(root, '.tmp', 'dist', 'dist', 'terminalWorkerMain.js')
+const workerStaticPath = join(root, 'dist', commitHash, 'packages', 'terminal-worker', 'dist', 'terminalWorkerMain.js')
+const serverWorkerStaticPath = join(
+  root,
+  'packages',
+  'server',
+  'node_modules',
+  '@lvce-editor',
+  'static-server',
+  'static',
+  commitHash,
+  'packages',
+  'terminal-worker',
+  'dist',
+  'terminalWorkerMain.js',
+)
+
+await cp(workerPath, workerStaticPath)
+await cp(workerPath, serverWorkerStaticPath)
 await cp(join(root, 'dist'), join(root, '.tmp', 'static'), { recursive: true })

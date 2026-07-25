@@ -1,6 +1,5 @@
 export interface TerminalState {
   readonly backend: string
-  readonly renderer: string
 }
 
 const state = {
