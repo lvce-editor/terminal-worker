@@ -12,6 +12,9 @@
   "license": "MIT",
   "description": "",
   "dependencies": {
-    "@lvce-editor/server": "^0.70.24"
+    "@lvce-editor/server": "^0.93.24"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.1"
   }
 }
