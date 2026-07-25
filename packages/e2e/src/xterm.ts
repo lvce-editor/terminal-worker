@@ -37,10 +37,10 @@ export const test: Test = async ({ Command, expect, FileSystem, KeyBoard, Locato
   await textArea.type('')
   await expect(textArea).toBeFocused()
 
-  await runCommand(textArea, KeyBoard, `node -e "process.stdout.write(['lvce-xterm-real','-pty'].join(''))"`)
+  await runCommand(textArea, KeyBoard, `node -e "console.log(['lvce-xterm-real','-pty'].join(''))"`)
   await expect(rows).toContainText('lvce-xterm-real-pty')
 
-  await textArea.type(`node -e "process.stdout.write(['lvce-xterm','-input'].join(''))"X`)
+  await textArea.type(`node -e "console.log(['lvce-xterm','-input'].join(''))"X`)
   await new Promise((resolve) => setTimeout(resolve, 50))
   await KeyBoard.press('Backspace')
   await new Promise((resolve) => setTimeout(resolve, 50))
@@ -48,16 +48,16 @@ export const test: Test = async ({ Command, expect, FileSystem, KeyBoard, Locato
   await new Promise((resolve) => setTimeout(resolve, 300))
   await expect(rows).toContainText('lvce-xterm-input')
 
-  await runCommand(textArea, KeyBoard, `node -e "process.stdout.write(['lvce-xterm','-first'].join(''))"`)
+  await runCommand(textArea, KeyBoard, `node -e "console.log(['lvce-xterm','-first'].join(''))"`)
   await expect(rows).toContainText('lvce-xterm-first')
-  await runCommand(textArea, KeyBoard, `node -e "process.stdout.write(['lvce-xterm','-second'].join(''))"`)
+  await runCommand(textArea, KeyBoard, `node -e "console.log(['lvce-xterm','-second'].join(''))"`)
   await expect(rows).toContainText('lvce-xterm-second')
 
   await runCommand(textArea, KeyBoard, `node -e "require('node:fs').writeFileSync('file.txt',['hel','lo'].join(''))"`)
-  await runCommand(textArea, KeyBoard, `node -e "process.stdout.write(require('node:fs').readFileSync('file.txt','utf8'))"`)
+  await runCommand(textArea, KeyBoard, `node -e "console.log(require('node:fs').readFileSync('file.txt','utf8'))"`)
   await expect(rows).toContainText('hello')
 
   await runCommand(textArea, KeyBoard, `node -e "require('node:fs').writeFileSync(['created','.txt'].join(''),'')"`)
-  await runCommand(textArea, KeyBoard, `node -e "process.stdout.write(require('node:fs').readdirSync('.').join('\\n'))"`)
+  await runCommand(textArea, KeyBoard, `node -e "console.log(require('node:fs').readdirSync('.').join('\\n'))"`)
   await expect(rows).toContainText('created.txt')
 }
