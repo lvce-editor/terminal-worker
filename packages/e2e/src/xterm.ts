@@ -7,6 +7,7 @@ const runCommand = async (textArea, KeyBoard, command) => {
   // Renderer-process input is forwarded to the terminal worker asynchronously.
   await new Promise((resolve) => setTimeout(resolve, 50))
   await KeyBoard.press('Enter')
+  await new Promise((resolve) => setTimeout(resolve, 300))
 }
 
 export const test: Test = async ({ Command, expect, FileSystem, KeyBoard, Locator, Settings, Workspace }) => {
@@ -30,32 +31,33 @@ export const test: Test = async ({ Command, expect, FileSystem, KeyBoard, Locato
   await expect(terminal).toBeVisible()
   // eslint-disable-next-line e2e/no-direct-click
   await terminal.click()
-  await expect(textArea).toBeFocused()
   // The xterm view mounts before the spawned shell is ready to receive input.
   await new Promise((resolve) => setTimeout(resolve, 1000))
+  await expect(textArea).toHaveCount(1)
   await textArea.type('')
   await expect(textArea).toBeFocused()
 
-  await runCommand(textArea, KeyBoard, 'echo lvce-xterm-real-pty')
+  await runCommand(textArea, KeyBoard, `node -e "process.stdout.write(['lvce-xterm-real','-pty'].join(''))"`)
   await expect(rows).toContainText('lvce-xterm-real-pty')
 
-  await textArea.type('echo lvce-xterm-inputX')
+  await textArea.type(`node -e "process.stdout.write(['lvce-xterm','-input'].join(''))"X`)
   await new Promise((resolve) => setTimeout(resolve, 50))
   await KeyBoard.press('Backspace')
   await new Promise((resolve) => setTimeout(resolve, 50))
   await KeyBoard.press('Enter')
+  await new Promise((resolve) => setTimeout(resolve, 300))
   await expect(rows).toContainText('lvce-xterm-input')
 
-  await runCommand(textArea, KeyBoard, 'echo lvce-xterm-first')
+  await runCommand(textArea, KeyBoard, `node -e "process.stdout.write(['lvce-xterm','-first'].join(''))"`)
   await expect(rows).toContainText('lvce-xterm-first')
-  await runCommand(textArea, KeyBoard, 'echo lvce-xterm-second')
+  await runCommand(textArea, KeyBoard, `node -e "process.stdout.write(['lvce-xterm','-second'].join(''))"`)
   await expect(rows).toContainText('lvce-xterm-second')
 
-  await runCommand(textArea, KeyBoard, 'echo hello > file.txt')
-  await runCommand(textArea, KeyBoard, 'cat file.txt')
+  await runCommand(textArea, KeyBoard, `node -e "require('node:fs').writeFileSync('file.txt',['hel','lo'].join(''))"`)
+  await runCommand(textArea, KeyBoard, `node -e "process.stdout.write(require('node:fs').readFileSync('file.txt','utf8'))"`)
   await expect(rows).toContainText('hello')
 
-  await runCommand(textArea, KeyBoard, 'touch created.txt')
-  await runCommand(textArea, KeyBoard, 'ls')
+  await runCommand(textArea, KeyBoard, `node -e "require('node:fs').writeFileSync(['created','.txt'].join(''),'')"`)
+  await runCommand(textArea, KeyBoard, `node -e "process.stdout.write(require('node:fs').readdirSync('.').join('\\n'))"`)
   await expect(rows).toContainText('created.txt')
 }
