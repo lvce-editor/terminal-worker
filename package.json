@@ -4,6 +4,9 @@
   "license": "MIT",
   "author": "Lvce Editor",
   "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
   "directories": {
     "test": "test"
   },
@@ -11,10 +14,9 @@
     "build": "node scripts/build.js",
     "build:static": "node packages/build/src/build-static.js",
     "build:watch": "nodemon",
-    "postinstall": "lerna bootstrap --ci",
     "lint": "eslint .",
-    "test": "lerna run test",
-    "test:watch": "node --unhandled-rejections=warn --experimental-vm-modules ./node_modules/jest/bin/jest.js --watch",
+    "test": "npm test --workspaces --if-present",
+    "test:watch": "npm run test:watch -w @lvce-editor/terminal-worker",
     "type-check": "tsc -b"
   },
   "prettier": {
@@ -23,10 +25,8 @@
     "printWidth": 150
   },
   "devDependencies": {
-    "@lerna/legacy-package-management": "^8.2.4",
     "@lvce-editor/eslint-config": "^17.1.0",
     "eslint": "^10.7.0",
-    "lerna": "^8.2.3",
     "nodemon": "^3.1.14",
     "prettier": "^3.8.4",
     "typescript": "^6.0.3"
