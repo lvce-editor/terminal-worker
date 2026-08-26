@@ -10,6 +10,11 @@ const forwardData = async (id: number, data: unknown): Promise<void> => {
   await RendererWorker.invoke('Viewlet.send', id, 'handleData', parsedData)
 }
 
+const forwardExit = async (id: number, data: unknown): Promise<void> => {
+  await RendererWorker.invoke('Viewlet.send', id, 'handleExit', data)
+  await dispose(id)
+}
+
 export const create = async (
   id: number,
   cwd: string,
@@ -22,9 +27,12 @@ export const create = async (
     backend,
   })
   if (backend === TerminalBackendType.Mock) {
-    TerminalMockBackend.create(id, cwd, (data) => {
-      void forwardData(id, data)
-    })
+    TerminalMockBackend.create(
+      id,
+      cwd,
+      (data) => forwardData(id, data),
+      (data) => forwardExit(id, data),
+    )
     return
   }
   await TerminalProcess.listen()
@@ -34,6 +42,10 @@ export const create = async (
 export const handleMessage = async (id: number, method: string, data: unknown): Promise<void> => {
   if (method === 'handleData') {
     await forwardData(id, data)
+    return
+  }
+  if (method === 'handleExit') {
+    await forwardExit(id, data)
   }
 }
 
