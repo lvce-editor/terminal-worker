@@ -96,7 +96,31 @@ test('handleMessage - forwards xterm backend data to renderer worker', async () 
   expect(rendererInvoke).toHaveBeenCalledWith('Viewlet.send', 108, 'handleData', new TextEncoder().encode('abc'))
 })
 
+test('handleMessage - forwards exit and disposes the real terminal', async () => {
+  await Terminal.create(109, '/test', 'bash', [])
+
+  await Terminal.handleMessage(109, 'handleExit', { exitCode: 0, signal: 0 })
+
+  expect(rendererInvoke).toHaveBeenCalledWith('Viewlet.send', 109, 'handleExit', { exitCode: 0, signal: 0 })
+  expect(terminalProcessSend).toHaveBeenCalledWith('Terminal.dispose', 109)
+  terminalProcessSend.mockClear()
+  await Terminal.write(109, 'ignored')
+  expect(terminalProcessSend).not.toHaveBeenCalled()
+})
+
+test('write - mock exit forwards exit and disposes the terminal', async () => {
+  await Terminal.create(110, '/test', 'bash', [], { backend: 'mock' })
+  rendererInvoke.mockClear()
+
+  await Terminal.write(110, 'exit\r')
+
+  expect(rendererInvoke).toHaveBeenCalledWith('Viewlet.send', 110, 'handleExit', { exitCode: 0, signal: 0 })
+  const invocationCount = rendererInvoke.mock.calls.length
+  await Terminal.write(110, 'ignored')
+  expect(rendererInvoke).toHaveBeenCalledTimes(invocationCount)
+})
+
 test('handleMessage - ignores unrelated viewlet messages', async () => {
-  await Terminal.handleMessage(109, 'focus', undefined)
+  await Terminal.handleMessage(111, 'focus', undefined)
   expect(rendererInvoke).not.toHaveBeenCalled()
 })

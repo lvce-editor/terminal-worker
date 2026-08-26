@@ -1,7 +1,8 @@
 interface MockTerminal {
   readonly files: Record<string, string>
   input: string
-  onData(data: string): void
+  onData(data: string): Promise<void>
+  onExit(data: unknown): Promise<void>
 }
 
 const prompt = '$ '
@@ -10,11 +11,12 @@ const state = {
   terminals: Object.create(null) as Record<number, MockTerminal>,
 }
 
-const createTerminal = (onData: (data: string) => void): MockTerminal => {
+const createTerminal = (onData: (data: string) => Promise<void>, onExit: (data: unknown) => Promise<void>): MockTerminal => {
   return {
     files: Object.create(null),
     input: '',
     onData,
+    onExit,
   }
 }
 
@@ -55,17 +57,21 @@ const getEchoRedirect = (command: string): readonly [string, string] | undefined
   return [text, file]
 }
 
-const runCommand = async (terminal: MockTerminal, command: string): Promise<void> => {
+const runCommand = async (terminal: MockTerminal, command: string): Promise<boolean> => {
+  if (command === 'exit') {
+    await terminal.onExit({ exitCode: 0, signal: 0 })
+    return false
+  }
   const echoRedirectMatch = getEchoRedirect(command)
   if (echoRedirectMatch) {
     const [text, file] = echoRedirectMatch
     terminal.files[file] = stripQuotes(text) + '\n'
-    return
+    return true
   }
   const echoText = getCommandArguments(command, 'echo')
   if (echoText) {
-    terminal.onData(stripQuotes(echoText) + '\n')
-    return
+    await terminal.onData(stripQuotes(echoText) + '\n')
+    return true
   }
   const touchFiles = getCommandArguments(command, 'touch')
   if (touchFiles) {
@@ -73,33 +79,34 @@ const runCommand = async (terminal: MockTerminal, command: string): Promise<void
     for (const file of files) {
       terminal.files[file] ||= ''
     }
-    return
+    return true
   }
   const catFile = getCommandArguments(command, 'cat')
   if (catFile) {
     const file = catFile
-    terminal.onData(terminal.files[file] || '')
-    return
+    await terminal.onData(terminal.files[file] || '')
+    return true
   }
   if (command === 'ls') {
-    terminal.onData(
+    await terminal.onData(
       Object.keys(terminal.files)
         .toSorted((a, b) => a.localeCompare(b))
         .join('\n') + '\n',
     )
-    return
+    return true
   }
-  terminal.onData(`${command}: command not found\n`)
+  await terminal.onData(`${command}: command not found\n`)
+  return true
 }
 
-export const create = (id: number, _cwd: string, onData: (data: string) => void): void => {
-  state.terminals[id] = createTerminal(onData)
-  onData(prompt)
+export const create = (id: number, _cwd: string, onData: (data: string) => Promise<void>, onExit: (data: unknown) => Promise<void>): void => {
+  state.terminals[id] = createTerminal(onData, onExit)
+  void onData(prompt)
 }
 
 export const write = async (id: number, data: string): Promise<void> => {
   const terminal = getTerminal(id)
-  terminal.onData(data)
+  await terminal.onData(data)
   terminal.input += data
   if (!terminal.input.includes('\r') && !terminal.input.includes('\n')) {
     return
@@ -107,9 +114,12 @@ export const write = async (id: number, data: string): Promise<void> => {
   const lines = terminal.input.split(/\r\n|\r|\n/)
   terminal.input = lines.pop() || ''
   for (const line of lines) {
-    terminal.onData('\r\n')
-    await runCommand(terminal, line)
-    terminal.onData(prompt)
+    await terminal.onData('\r\n')
+    const keepRunning = await runCommand(terminal, line)
+    if (!keepRunning) {
+      return
+    }
+    await terminal.onData(prompt)
   }
 }
 
