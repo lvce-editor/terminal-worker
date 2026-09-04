@@ -49,13 +49,11 @@
     "@jest/globals": "^30.4.1",
     "@lvce-editor/assert": "^1.5.1",
     "@lvce-editor/constants": "^5.14.0",
-    "@lvce-editor/json-rpc": "^8.0.0",
     "@lvce-editor/rpc": "^6.4.0",
     "@lvce-editor/rpc-registry": "^9.27.0",
     "@lvce-editor/verror": "^1.7.0",
     "@lvce-editor/viewlet-registry": "^5.0.0",
     "jest": "^30.4.2",
-    "termterm": "^0.6.2",
     "ts-jest": "^29.4.11"
   }
 }
