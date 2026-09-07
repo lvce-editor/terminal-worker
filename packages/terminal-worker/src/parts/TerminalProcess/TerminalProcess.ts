@@ -1,11 +1,22 @@
 import { get } from '../IpcState/IpcState.ts'
 import * as LaunchTerminalProcess from '../LaunchTerminalProcess/LaunchTerminalProcess.ts'
 
+const state: { pending: Promise<void> | undefined } = { pending: undefined }
+
+const launch = async (): Promise<void> => {
+  try {
+    await LaunchTerminalProcess.launchTerminalProcess()
+  } finally {
+    state.pending = undefined
+  }
+}
+
 export const listen = async () => {
   if (get()) {
     return
   }
-  await LaunchTerminalProcess.launchTerminalProcess()
+  state.pending ||= launch()
+  await state.pending
 }
 
 export const invoke = (method, ...params) => {
