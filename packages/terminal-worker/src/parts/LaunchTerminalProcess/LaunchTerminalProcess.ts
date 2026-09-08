@@ -13,7 +13,7 @@ const doCreate = (onClose: () => void) => {
     type: 'terminal-process',
   }
   if (platform === PlatformType.Electron) {
-    return createElectronRpc(options)
+    return createElectronRpc({ ...options, onClose })
   }
   return createWebSocketRpc({ ...options, onClose })
 }

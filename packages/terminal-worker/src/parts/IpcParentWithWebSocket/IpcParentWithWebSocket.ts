@@ -2,14 +2,20 @@ import { WebSocketRpcParent, WebSocketRpcParent2 } from '@lvce-editor/rpc'
 import { RendererWorker } from '@lvce-editor/rpc-registry'
 import * as Assert from '../Assert/Assert.ts'
 import * as CommandMapRef from '../CommandMapRef/CommandMapRef.ts'
+import { createElectronRpc } from '../IpcParentWithElectron/IpcParentWithElectron.ts'
 
 export const createWebSocketRpc = async ({ onClose, type }: { type: string; onClose?: () => void }) => {
   Assert.string(type)
   try {
-    const { protocols, url } = (await RendererWorker.invoke('WebSocketCapability.create', type)) as {
+    const connection = (await RendererWorker.invoke('WebSocketCapability.create', type)) as {
+      readonly type?: string
       readonly protocols: string[]
       readonly url: string
     }
+    if (connection.type === 'message-port') {
+      return createElectronRpc({ initialCommand: 'HandleMessagePortForTerminalProcess.handleMessagePortForTerminalProcess', onClose })
+    }
+    const { protocols, url } = connection
     const webSocket = new WebSocket(url, protocols)
     if (onClose) webSocket.addEventListener('close', onClose, { once: true })
     return WebSocketRpcParent.create({
