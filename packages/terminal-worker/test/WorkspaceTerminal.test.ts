@@ -42,7 +42,7 @@ test('notifies the terminal owner when its workspace port closes', async () => {
     },
     'WebSocketCapability.create': () => ({ type: 'message-port' }),
   })
-  const rpc = await createWebSocketRpc({ onClose, type: 'terminal-process' })
+  const rpc = await createWebSocketRpc({ onClose: () => onClose(), type: 'terminal-process' })
   serverPort?.close()
   await expect(closed).resolves.toBeUndefined()
   await rpc.dispose()
