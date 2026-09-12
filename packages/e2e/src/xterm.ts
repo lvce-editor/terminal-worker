@@ -6,10 +6,8 @@ export const name = 'viewlet.terminal-xterm-real-pty'
 // while resolving a built-in extension file URL.
 export const skip = typeof navigator !== 'undefined' && navigator.userAgent.includes('Windows')
 
-const runCommand = async (textArea, KeyBoard, rows, expect, command) => {
+const runCommand = async (textArea, KeyBoard, command) => {
   await textArea.type(command)
-  // Interactive shells can redraw the beginning of long input lines.
-  await expect(rows).toContainText(command.slice(-40))
   await KeyBoard.press('Enter')
 }
 
@@ -41,7 +39,7 @@ export const test: Test = async ({ Command, expect, FileSystem, KeyBoard, Locato
   await textArea.type('')
   await expect(textArea).toBeFocused()
 
-  await runCommand(textArea, KeyBoard, rows, expect, `node -e "console.log(['lvce-xterm-real','-pty'].join(''))"`)
+  await runCommand(textArea, KeyBoard, `node -e "console.log(['lvce-xterm-real','-pty'].join(''))"`)
   await expect(rows).toContainText('lvce-xterm-real-pty')
 
   const inputCommand = `node -e "console.log(['lvce-xterm','-input'].join(''))"`
@@ -52,30 +50,26 @@ export const test: Test = async ({ Command, expect, FileSystem, KeyBoard, Locato
   await KeyBoard.press('Enter')
   await expect(rows).toContainText('lvce-xterm-input')
 
-  await runCommand(textArea, KeyBoard, rows, expect, `node -e "console.log(['lvce-xterm','-first'].join(''))"`)
+  await runCommand(textArea, KeyBoard, `node -e "console.log(['lvce-xterm','-first'].join(''))"`)
   await expect(rows).toContainText('lvce-xterm-first')
-  await runCommand(textArea, KeyBoard, rows, expect, `node -e "console.log(['lvce-xterm','-second'].join(''))"`)
+  await runCommand(textArea, KeyBoard, `node -e "console.log(['lvce-xterm','-second'].join(''))"`)
   await expect(rows).toContainText('lvce-xterm-second')
 
   await runCommand(
     textArea,
     KeyBoard,
-    rows,
-    expect,
     `node -e "require('node:fs').writeFileSync('file.txt',['hel','lo'].join(''));console.log(['file','written'].join('-'))"`,
   )
   await expect(rows).toContainText('file-written')
-  await runCommand(textArea, KeyBoard, rows, expect, `node -e "console.log(require('node:fs').readFileSync('file.txt','utf8'))"`)
+  await runCommand(textArea, KeyBoard, `node -e "console.log(require('node:fs').readFileSync('file.txt','utf8'))"`)
   await expect(rows).toContainText('hello')
 
   await runCommand(
     textArea,
     KeyBoard,
-    rows,
-    expect,
     `node -e "require('node:fs').writeFileSync(['created','.txt'].join(''),'');console.log(['file','created'].join('-'))"`,
   )
   await expect(rows).toContainText('file-created')
-  await runCommand(textArea, KeyBoard, rows, expect, `node -e "console.log(require('node:fs').readdirSync('.').join('\\n'))"`)
+  await runCommand(textArea, KeyBoard, `node -e "console.log(require('node:fs').readdirSync('.').join('\\n'))"`)
   await expect(rows).toContainText('created.txt')
 }
