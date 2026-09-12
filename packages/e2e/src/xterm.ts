@@ -8,7 +8,8 @@ export const skip = typeof navigator !== 'undefined' && navigator.userAgent.incl
 
 const runCommand = async (textArea, KeyBoard, rows, expect, command) => {
   await textArea.type(command)
-  await expect(rows).toContainText(command)
+  // Interactive shells can redraw the beginning of long input lines.
+  await expect(rows).toContainText(command.slice(-40))
   await KeyBoard.press('Enter')
 }
 
