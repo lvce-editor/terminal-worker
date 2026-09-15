@@ -15,6 +15,13 @@ jest.unstable_mockModule('@lvce-editor/rpc-registry', () => {
 
 jest.unstable_mockModule('../src/parts/TerminalProcess/TerminalProcess.ts', () => {
   return {
+    acquire: () => {
+      terminalProcessListen()
+      return {
+        ready: Promise.resolve({ invoke: terminalProcessInvoke, send: terminalProcessSend }),
+        release: async () => {},
+      }
+    },
     invoke: terminalProcessInvoke,
     listen: terminalProcessListen,
     send: terminalProcessSend,
@@ -80,8 +87,8 @@ test('dispose - real backend disposes pty and removes state', async () => {
   await Terminal.create(106, '/test', 'bash', [])
   await Terminal.dispose(106)
   await Terminal.write(106, 'ignored')
-  expect(terminalProcessSend).toHaveBeenCalledTimes(1)
-  expect(terminalProcessSend).toHaveBeenCalledWith('Terminal.dispose', 106)
+  expect(terminalProcessSend).not.toHaveBeenCalled()
+  expect(terminalProcessInvoke).toHaveBeenCalledWith('Terminal.dispose', 106)
 })
 
 test('dispose - mock backend removes terminal', async () => {
@@ -102,7 +109,7 @@ test('handleMessage - forwards exit and disposes the real terminal', async () =>
   await Terminal.handleMessage(109, 'handleExit', { exitCode: 0, signal: 0 })
 
   expect(rendererInvoke).toHaveBeenCalledWith('Viewlet.send', 109, 'handleExit', { exitCode: 0, signal: 0 })
-  expect(terminalProcessSend).toHaveBeenCalledWith('Terminal.dispose', 109)
+  expect(terminalProcessInvoke).toHaveBeenCalledWith('Terminal.dispose', 109)
   terminalProcessSend.mockClear()
   await Terminal.write(109, 'ignored')
   expect(terminalProcessSend).not.toHaveBeenCalled()

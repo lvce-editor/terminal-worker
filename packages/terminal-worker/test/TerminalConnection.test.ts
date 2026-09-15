@@ -89,3 +89,43 @@ test('does not cache a connection that closes during initialization', async () =
   await TerminalProcess.listen()
   expect(IpcState.get()).toBeDefined()
 })
+
+test('last owner closes the connection and reopening uses a fresh rpc', async () => {
+  const first = TerminalProcess.acquire()
+  const second = TerminalProcess.acquire()
+  const firstRpc = await first.ready
+  expect(await second.ready).toBe(firstRpc)
+  await first.release()
+  expect(firstRpc.dispose).not.toHaveBeenCalled()
+  await second.release()
+  expect(IpcState.get()).toBeUndefined()
+  expect(firstRpc.dispose).toHaveBeenCalledTimes(1)
+  await second.release()
+  expect(firstRpc.dispose).toHaveBeenCalledTimes(1)
+  const replacement = TerminalProcess.acquire()
+  expect(await replacement.ready).not.toBe(firstRpc)
+  await replacement.release()
+})
+
+test('old owners cannot dispose a replacement after disconnection', async () => {
+  const first = TerminalProcess.acquire()
+  await first.ready
+  sockets[0].dispatchEvent(new Event('close'))
+  const second = TerminalProcess.acquire()
+  const replacement = await second.ready
+  await first.release()
+  expect(IpcState.get()).toBe(replacement)
+  expect(replacement.dispose).not.toHaveBeenCalled()
+  await second.release()
+  expect(replacement.dispose).toHaveBeenCalledTimes(1)
+})
+
+test('failed acquisition can be released and retried', async () => {
+  createRpc.mockRejectedValueOnce(new Error('launch failed'))
+  const first = TerminalProcess.acquire()
+  await expect(first.ready).rejects.toThrow('launch failed')
+  await first.release()
+  const second = TerminalProcess.acquire()
+  await expect(second.ready).resolves.toBeDefined()
+  await second.release()
+})
