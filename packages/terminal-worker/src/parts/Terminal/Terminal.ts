@@ -6,7 +6,7 @@ import * as TerminalState from '../TerminalState/TerminalState.ts'
 import * as ToUint8Array from '../ToUint8Array/ToUint8Array.ts'
 
 const closing = new Set<number>()
-const sessions = new Map<number, { ready: Promise<void>; connection: ReturnType<typeof TerminalProcess.acquire> }>()
+const sessions = new Map<number, { ready: Promise<unknown>; connection: ReturnType<typeof TerminalProcess.acquire> }>()
 
 const forwardData = async (id: number, data: unknown): Promise<void> => {
   const parsedData = ToUint8Array.toUint8Array(data)
@@ -23,8 +23,8 @@ export const create = async (
   cwd: string,
   command: string,
   args: readonly string[],
-  options: { readonly backend?: string } = {},
-): Promise<void> => {
+  options: { readonly backend?: string; readonly sessionToken?: string; readonly restoreOnly?: boolean } = {},
+): Promise<{ attached: boolean } | undefined> => {
   if (TerminalState.get(id) || closing.has(id)) throw new Error(`Terminal ${id} already exists`)
   const backend = options.backend || TerminalBackendType.Real
   TerminalState.set(id, {
@@ -42,12 +42,20 @@ export const create = async (
   const connection = TerminalProcess.acquire()
   const ready = (async () => {
     const rpc = await connection.ready
-    await rpc.invoke('Terminal.create', id, cwd, command, args)
+    return options.sessionToken
+      ? rpc.invoke('Terminal.create', id, cwd, command, args, { restoreOnly: options.restoreOnly === true, sessionToken: options.sessionToken })
+      : rpc.invoke('Terminal.create', id, cwd, command, args)
   })()
   const session = { connection, ready }
   sessions.set(id, session)
   try {
-    await ready
+    const result = await ready
+    if (result?.attached === false) {
+      sessions.delete(id)
+      TerminalState.remove(id)
+      await connection.release()
+    }
+    return result
   } catch (error) {
     if (sessions.get(id) === session) {
       sessions.delete(id)
@@ -59,6 +67,10 @@ export const create = async (
 }
 
 export const handleMessage = async (id: number, method: string, data: unknown): Promise<void> => {
+  if (method === 'handleRestore') {
+    await RendererWorker.invoke('Viewlet.send', id, 'handleRestore', data)
+    return
+  }
   if (method === 'handleData') {
     await forwardData(id, data)
     return
