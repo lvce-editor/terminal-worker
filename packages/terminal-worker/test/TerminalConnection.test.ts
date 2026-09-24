@@ -129,3 +129,43 @@ test('failed acquisition can be released and retried', async () => {
   await expect(second.ready).resolves.toBeDefined()
   await second.release()
 })
+
+test('a changed workspace capability must not use the existing local terminal connection', async () => {
+  capability.mockResolvedValueOnce({ protocols: [], url: 'wss://local.test/terminal' })
+  const local = TerminalProcess.acquire()
+  const localRpc = await local.ready
+  TerminalProcess.resetWorkspaceConnection()
+  capability.mockResolvedValueOnce({ protocols: [], url: 'wss://remote.test/terminal' })
+  const remote = TerminalProcess.acquire()
+  try {
+    expect(await remote.ready).not.toBe(localRpc)
+  } finally {
+    await local.release()
+    await remote.release()
+  }
+})
+
+test('a delayed connection from the previous workspace cannot replace the new connection', async () => {
+  const started = Promise.withResolvers<void>()
+  const delayed = Promise.withResolvers<Rpc>()
+  createRpc.mockImplementationOnce(() => {
+    started.resolve()
+    return delayed.promise
+  })
+  const local = TerminalProcess.acquire()
+  const rejected = (async () => {
+    await expect(local.ready).rejects.toThrow('Workspace changed')
+  })()
+  await started.promise
+  TerminalProcess.resetWorkspaceConnection()
+  const remote = TerminalProcess.acquire()
+  const remoteRpc = await remote.ready
+  const staleRpc = rpc()
+  delayed.resolve(staleRpc)
+  await rejected
+  await local.release()
+  expect(staleRpc.dispose).toHaveBeenCalledTimes(1)
+  expect(IpcState.get()).toBe(remoteRpc)
+  expect(remoteRpc.dispose).not.toHaveBeenCalled()
+  await remote.release()
+})

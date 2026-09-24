@@ -31,7 +31,7 @@ export const launchTerminalProcess = async () => {
       await rpc.dispose()
       throw new Error('Terminal connection closed during initialization')
     }
-    set(rpc)
+    return rpc
   } catch (error) {
     throw new VError(error, 'Failed to create terminal connection')
   }
