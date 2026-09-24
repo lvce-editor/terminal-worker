@@ -2,22 +2,29 @@ import type { Rpc } from '@lvce-editor/rpc'
 import { get, set } from '../IpcState/IpcState.ts'
 import * as LaunchTerminalProcess from '../LaunchTerminalProcess/LaunchTerminalProcess.ts'
 
-const state: { pending: Promise<void> | undefined } = { pending: undefined }
+const state: { generation: number; pending: Promise<Rpc> | undefined } = { generation: 0, pending: undefined }
 
-const launch = async (): Promise<void> => {
+const launch = async (generation: number): Promise<Rpc> => {
   try {
-    await LaunchTerminalProcess.launchTerminalProcess()
+    const rpc = await LaunchTerminalProcess.launchTerminalProcess()
+    if (generation !== state.generation) {
+      await rpc.dispose()
+      throw new Error('Workspace changed while starting the terminal. Create a new terminal to retry.')
+    }
+    set(rpc)
+    return rpc
   } finally {
-    state.pending = undefined
+    if (generation === state.generation) state.pending = undefined
   }
 }
 
 export const listen = async () => {
-  if (get()) {
-    return
+  const rpc = get()
+  if (rpc) {
+    return rpc
   }
-  state.pending ||= launch()
-  await state.pending
+  state.pending ||= launch(state.generation)
+  return state.pending
 }
 
 export const invoke = (method, ...params) => {
@@ -35,14 +42,21 @@ interface Connection {
 }
 const connections: { current?: Connection } = {}
 
+// Existing terminals retain their leased RPC; only new terminals follow the workspace.
+export const resetWorkspaceConnection = (): void => {
+  state.generation++
+  state.pending = undefined
+  connections.current = undefined
+  set(undefined)
+}
+
 export const acquire = () => {
   if (!connections.current || (connections.current.result.rpc && connections.current.result.rpc !== get())) {
     const result: { rpc?: Rpc } = {}
     const connection: Connection = {
       owners: new Set(),
       ready: (async () => {
-        await listen()
-        const rpc = get()
+        const rpc = await listen()
         if (!rpc) throw new Error('Terminal connection closed')
         result.rpc = rpc
         return rpc
