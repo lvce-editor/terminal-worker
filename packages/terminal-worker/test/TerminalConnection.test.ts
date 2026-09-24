@@ -153,14 +153,16 @@ test('a delayed connection from the previous workspace cannot replace the new co
     return delayed.promise
   })
   const local = TerminalProcess.acquire()
-  const rejected = local.ready.catch((error) => error)
+  const rejected = (async () => {
+    await expect(local.ready).rejects.toThrow('Workspace changed')
+  })()
   await started.promise
   TerminalProcess.resetWorkspaceConnection()
   const remote = TerminalProcess.acquire()
   const remoteRpc = await remote.ready
   const staleRpc = rpc()
   delayed.resolve(staleRpc)
-  expect(await rejected).toEqual(expect.objectContaining({ message: expect.stringContaining('Workspace changed') }))
+  await rejected
   await local.release()
   expect(staleRpc.dispose).toHaveBeenCalledTimes(1)
   expect(IpcState.get()).toBe(remoteRpc)
