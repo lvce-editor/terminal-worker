@@ -39,6 +39,9 @@ export const test: Test = async ({ Command, expect, FileSystem, KeyBoard, Locato
   await textArea.type('')
   await expect(textArea).toBeFocused()
 
+  // Keep the echoed input visible even when the CI workspace produces a long zsh prompt.
+  await runCommand(textArea, KeyBoard, "export PS1='$ '")
+
   await runCommand(textArea, KeyBoard, `node -e "console.log(['lvce-xterm-real','-pty'].join(''))"`)
   await expect(rows).toContainText('lvce-xterm-real-pty')
 
