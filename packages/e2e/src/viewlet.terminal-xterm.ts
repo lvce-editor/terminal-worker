@@ -11,7 +11,7 @@ const runCommand = async (KeyBoard, command) => {
   await KeyBoard.press('Enter')
 }
 
-export const test = async ({ Command, KeyBoard, Locator, Settings, expect }) => {
+export const test = async ({ Command, expect, KeyBoard, Locator, Settings }) => {
   await Settings.update({
     'terminal.backend': 'mock',
   })

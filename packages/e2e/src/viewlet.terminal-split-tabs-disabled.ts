@@ -2,7 +2,7 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'viewlet.terminal-split-tabs-disabled'
 
-export const test: Test = async ({ Command, Locator, Settings, expect }) => {
+export const test: Test = async ({ Command, expect, Locator, Settings }) => {
   await Settings.update({ 'terminal.backend': 'mock', 'terminal.tabs.enabled': false })
   await Command.execute('Layout.showPanel', 'Terminals')
   await Command.execute('Terminals.splitTerminal')

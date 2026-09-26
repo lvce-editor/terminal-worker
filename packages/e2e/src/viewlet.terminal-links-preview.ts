@@ -5,7 +5,7 @@ export const name = 'viewlet.terminal-links-preview'
 // Simple Browser requires Electron WebContentsView; the standard runner is browser-only.
 export const skip = 1
 
-export const test: Test = async ({ Command, Locator, Settings, expect }) => {
+export const test: Test = async ({ Command, expect, Locator, Settings }) => {
   await Settings.update({ 'terminal.backend': 'mock' })
   await Command.execute('Layout.hidePreview')
   await Command.execute('Layout.showPanel', 'Terminals')

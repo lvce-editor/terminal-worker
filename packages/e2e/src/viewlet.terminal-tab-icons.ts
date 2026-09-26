@@ -2,7 +2,7 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'viewlet.terminal-tab-icons'
 
-export const test: Test = async ({ Command, Locator, Settings, expect }) => {
+export const test: Test = async ({ Command, expect, Locator, Settings }) => {
   await Settings.update({
     'terminal.backend': 'mock',
   })

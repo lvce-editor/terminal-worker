@@ -3,7 +3,7 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 export const name = 'viewlet.terminal-tab-transfer'
 
 export const test: Test = async (api) => {
-  const { Command, ComponentState, KeyBoard, Locator, Settings, expect } = api
+  const { Command, ComponentState, expect, KeyBoard, Locator, Settings } = api
   const { DragAndDrop } = api as any
   await Settings.update({ 'terminal.backend': 'mock', 'terminal.tabs.enabled': true })
   await Command.execute('Layout.showPanel', 'Terminals')
@@ -24,8 +24,8 @@ export const test: Test = async (api) => {
   const terminal = components.find((component) => component.moduleId === 'Terminal2')
   if (!terminal) throw new Error('Missing terminal component')
   const payload = {
-    type: 'application/x-lvce-terminal',
     data: `lvce-terminal:${JSON.stringify({ sourceUid: panel.uid, terminalUid: terminal.uid })}`,
+    type: 'application/x-lvce-terminal',
   }
 
   // The real pointer listener must prepare the terminal-only drag payload.
@@ -60,7 +60,8 @@ export const test: Test = async (api) => {
   await expect(Locator('.MainTab')).toHaveCount(0)
   await expect(panelTerminal).toBeVisible()
   await expect(panelTerminal).toContainText('round-trip.txt')
-  const after = (await ComponentState.getComponents()).filter((component) => component.moduleId === 'Terminal2')
+  const componentsAfterTransfer = await ComponentState.getComponents()
+  const after = componentsAfterTransfer.filter((component) => component.moduleId === 'Terminal2')
   if (after.length !== 1 || after[0].uid !== terminal.uid) throw new Error('Terminal session was replaced or duplicated')
   await panelTerminal.click()
   await run('exit')
@@ -71,7 +72,8 @@ export const test: Test = async (api) => {
   await Command.execute('Terminals.splitTerminal')
   await Command.execute('Terminals.addTerminal')
   await Command.execute('Terminals.handleClickTab', '0')
-  const splitTerminals = (await ComponentState.getComponents()).filter((component) => component.moduleId === 'Terminal2')
+  const componentsAfterSplit = await ComponentState.getComponents()
+  const splitTerminals = componentsAfterSplit.filter((component) => component.moduleId === 'Terminal2')
   const splitUid = Math.min(...splitTerminals.map((component) => component.uid))
   await Command.execute('Terminals.handleTabPointerDown', String(splitUid))
   await Command.execute('Main.handleDrop', await DragAndDrop.createDropSessionFromDragData())

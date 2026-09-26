@@ -2,7 +2,7 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'viewlet.terminal-split-hierarchy'
 
-export const test: Test = async ({ Command, ComponentState, Locator, Settings, expect }) => {
+export const test: Test = async ({ Command, ComponentState, expect, Locator, Settings }) => {
   await Settings.update({ 'terminal.backend': 'mock', 'terminal.tabs.enabled': true })
   await Command.execute('Layout.showPanel', 'Terminals')
   const panes = Locator('.XtermTerminal')

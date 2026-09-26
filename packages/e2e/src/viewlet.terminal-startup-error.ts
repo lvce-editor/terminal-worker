@@ -2,7 +2,7 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 
 export const name = 'viewlet.terminal-startup-error'
 
-export const test: Test = async ({ Command, FileSystem, Locator, Settings, expect }) => {
+export const test: Test = async ({ Command, expect, FileSystem, Locator, Settings }) => {
   const directory = await FileSystem.getTmpDir({ scheme: 'file' })
   await Command.execute('Workspace.setUri', directory)
   await Settings.update({ 'terminal.backend': 'real' })
