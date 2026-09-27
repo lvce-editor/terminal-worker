@@ -3,6 +3,7 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 export const name = 'viewlet.terminal-tab-icons'
 
 export const test: Test = async ({ Command, expect, Locator, Settings }) => {
+  const shellName = navigator.userAgent.includes('Windows') ? 'powershell' : 'bash'
   await Settings.update({
     'terminal.backend': 'mock',
   })
@@ -10,11 +11,11 @@ export const test: Test = async ({ Command, expect, Locator, Settings }) => {
   await expect(Locator('.XtermTerminal')).toBeVisible()
   await Command.execute('Terminals.addTerminal')
   await expect(Locator('.TerminalTab')).toHaveCount(2)
-  const bashIconUrl = /^url\("https?:\/\/[^/]+\/icons\/terminal-bash\.svg"\)$/
+  const shellIconUrl = new RegExp(`^url\\("https?:\\/\\/[^/]+\\/icons\\/terminal-${shellName}\\.svg"\\)$`)
   for (let i = 0; i < 2; i++) {
     const tab = Locator('.TerminalTab').nth(i)
-    await expect(tab.locator('.TerminalTabLabel')).toHaveText('bash')
+    await expect(tab.locator('.TerminalTabLabel')).toHaveText(shellName)
     await expect(tab.locator('.TerminalTabIcon')).toBeVisible()
-    await expect(tab.locator('.TerminalTabIcon')).toHaveCSS('mask-image', bashIconUrl as unknown as string)
+    await expect(tab.locator('.TerminalTabIcon')).toHaveCSS('mask-image', shellIconUrl as unknown as string)
   }
 }

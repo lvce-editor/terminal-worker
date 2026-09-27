@@ -3,6 +3,7 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 export const name = 'viewlet.terminal-panel-actions'
 
 export const test: Test = async (api) => {
+  const shellName = navigator.userAgent.includes('Windows') ? 'powershell' : 'bash'
   await api.Settings.update({
     'terminal.backend': 'mock',
   })
@@ -27,8 +28,8 @@ export const test: Test = async (api) => {
   await api.expect(api.Locator('#Menu-0')).toBeVisible()
   await api.Locator('#Menu-0 .MenuItem', { hasText: 'New Terminal' }).click()
   await api.expect(api.Locator('.TerminalTab')).toHaveCount(2)
-  await api.expect(api.Locator('.TerminalTabLabel').nth(0)).toHaveText('bash')
-  await api.expect(api.Locator('.TerminalTabLabel').nth(1)).toHaveText('bash')
+  await api.expect(api.Locator('.TerminalTabLabel').nth(0)).toHaveText(shellName)
+  await api.expect(api.Locator('.TerminalTabLabel').nth(1)).toHaveText(shellName)
   await api.expect(api.Locator('.TerminalTabIcon')).toHaveCount(2)
   await api.expect(terminals).toHaveCount(1)
   await api.expect(terminals.locator('.xterm-helper-textarea')).toBeFocused()
