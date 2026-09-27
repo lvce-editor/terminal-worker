@@ -2,19 +2,29 @@ import { PlatformType } from '@lvce-editor/constants'
 
 // TODO pass this as argument
 
-const getPlatform = () => {
+export const getPlatformFromWorkerName = (workerName: string) => {
+  if (workerName.includes('(Electron)')) {
+    return PlatformType.Electron
+  }
+  return PlatformType.Remote
+}
+
+export const getPlatform = () => {
   // @ts-ignore
   if (typeof PLATFORM !== 'undefined') {
     // @ts-ignore
     return PLATFORM
   }
+  const workerName = (globalThis as typeof globalThis & { name?: string }).name
+  if (typeof workerName === 'string') {
+    const workerPlatform = getPlatformFromWorkerName(workerName)
+    if (workerPlatform === PlatformType.Electron) {
+      return workerPlatform
+    }
+  }
   // @ts-ignore
   if (typeof process !== 'undefined' && process.env.NODE_ENV === 'test') {
     return 'test'
-  }
-  // TODO find a better way to pass runtime environment
-  if (typeof name !== 'undefined' && name.endsWith('(Electron)')) {
-    return PlatformType.Electron
   }
   return PlatformType.Remote
 }
