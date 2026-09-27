@@ -9,6 +9,7 @@ export const test: Test = async ({ Command, expect, Locator, Settings }) => {
   } else if (navigator.userAgent.includes('Mac')) {
     shellName = 'zsh'
   }
+  const shellIconName = shellName === 'zsh' ? 'bash' : shellName
   await Settings.update({
     'terminal.backend': 'mock',
   })
@@ -16,7 +17,7 @@ export const test: Test = async ({ Command, expect, Locator, Settings }) => {
   await expect(Locator('.XtermTerminal')).toBeVisible()
   await Command.execute('Terminals.addTerminal')
   await expect(Locator('.TerminalTab')).toHaveCount(2)
-  const shellIconUrl = new RegExp(`^url\\("https?:\\/\\/[^/]+\\/icons\\/terminal-${shellName}\\.svg"\\)$`)
+  const shellIconUrl = new RegExp(`^url\\("https?:\\/\\/[^/]+\\/icons\\/terminal-${shellIconName}\\.svg"\\)$`)
   for (let i = 0; i < 2; i++) {
     const tab = Locator('.TerminalTab').nth(i)
     await expect(tab.locator('.TerminalTabLabel')).toHaveText(shellName)
