@@ -3,7 +3,12 @@ import type { Test } from '@lvce-editor/test-with-playwright'
 export const name = 'viewlet.terminal-tab-icons'
 
 export const test: Test = async ({ Command, expect, Locator, Settings }) => {
-  const shellName = navigator.userAgent.includes('Windows') ? 'powershell' : 'bash'
+  let shellName = 'bash'
+  if (navigator.userAgent.includes('Windows')) {
+    shellName = 'powershell'
+  } else if (navigator.userAgent.includes('Mac')) {
+    shellName = 'zsh'
+  }
   await Settings.update({
     'terminal.backend': 'mock',
   })
