@@ -9,7 +9,7 @@ export const getPlatformFromWorkerName = (workerName: string) => {
   return PlatformType.Remote
 }
 
-export const getPlatform = () => {
+const getPlatform = () => {
   // @ts-ignore
   if (typeof PLATFORM !== 'undefined') {
     // @ts-ignore
