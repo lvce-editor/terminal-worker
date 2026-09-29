@@ -1,4 +1,4 @@
-import { cp, readdir, readFile, rm } from 'node:fs/promises'
+import { cp, readdir, readFile, realpath, rm } from 'node:fs/promises'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -25,5 +25,5 @@ for (const path of config.scripts) {
 }
 // Exercise this repository's build in the pinned application runtime.
 for (const [from, to] of config.artifacts) {
-  await cp(join(owner, from), join(application, to), { recursive: true })
+  await cp(join(owner, from), await realpath(join(application, to)), { recursive: true })
 }
