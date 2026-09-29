@@ -1,0 +1,4 @@
+{
+  "artifacts": [[".tmp/dist", "packages/renderer-worker/node_modules/@lvce-editor/terminal-worker"]],
+  "scripts": ["packages/extension-host-worker-tests/scripts/test-terminal-background.mjs", "scripts/test-terminal-process-lifecycle.mjs"]
+}
