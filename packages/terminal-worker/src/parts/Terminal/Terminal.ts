@@ -23,7 +23,12 @@ export const create = async (
   cwd: string,
   command: string,
   args: readonly string[],
-  options: { readonly backend?: string; readonly sessionToken?: string; readonly restoreOnly?: boolean } = {},
+  options: {
+    readonly backend?: string
+    readonly env?: Readonly<Record<string, string>>
+    readonly sessionToken?: string
+    readonly restoreOnly?: boolean
+  } = {},
 ): Promise<{ attached: boolean } | undefined> => {
   if (TerminalState.get(id) || closing.has(id)) throw new Error(`Terminal ${id} already exists`)
   const backend = options.backend || TerminalBackendType.Real
@@ -42,8 +47,12 @@ export const create = async (
   const connection = TerminalProcess.acquire()
   const ready = (async () => {
     const rpc = await connection.ready
-    return options.sessionToken
-      ? rpc.invoke('Terminal.create', id, cwd, command, args, { restoreOnly: options.restoreOnly === true, sessionToken: options.sessionToken })
+    const spawnOptions = {
+      ...(options.env && { env: options.env }),
+      ...(options.sessionToken && { restoreOnly: options.restoreOnly === true, sessionToken: options.sessionToken }),
+    }
+    return options.env || options.sessionToken
+      ? rpc.invoke('Terminal.create', id, cwd, command, args, spawnOptions)
       : rpc.invoke('Terminal.create', id, cwd, command, args)
   })()
   const session = { connection, ready }

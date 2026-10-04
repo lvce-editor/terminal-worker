@@ -131,3 +131,17 @@ test('handleMessage - ignores unrelated viewlet messages', async () => {
   await Terminal.handleMessage(111, 'focus', undefined)
   expect(rendererInvoke).not.toHaveBeenCalled()
 })
+
+test('forwards child environment overrides for both new and persistent terminals', async () => {
+  const env = { ELECTRON_RUN_AS_NODE: '1' }
+  await Terminal.create(3912, '/host', '/electron', ['devcontainer.js'], { env })
+  expect(terminalProcessInvoke).toHaveBeenCalledWith('Terminal.create', 3912, '/host', '/electron', ['devcontainer.js'], { env })
+  await Terminal.dispose(3912)
+  await Terminal.create(3913, '/host', '/electron', ['devcontainer.js'], { env, sessionToken: 'container-session' })
+  expect(terminalProcessInvoke).toHaveBeenCalledWith('Terminal.create', 3913, '/host', '/electron', ['devcontainer.js'], {
+    env,
+    restoreOnly: false,
+    sessionToken: 'container-session',
+  })
+  await Terminal.dispose(3913)
+})
